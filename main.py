@@ -18,11 +18,15 @@ app.add_middleware(
 )
 
 BASE_DIR = Path(__file__).resolve().parent
+UPLOADS_DIR = BASE_DIR / "uploads"
+COMPRESSED_DIR = UPLOADS_DIR / "compressed"
 
 # Bump this whenever you replace a video/thumbnail/poster WITHOUT renaming it.
 # It changes every ?v= in the API responses, so browsers fetch the new files
 # instead of serving the cached ones.
 VERSION = 3
+
+DEFAULT_ASPECT = 16 / 9
 
 
 class CachedStatic(StaticFiles):
@@ -38,7 +42,53 @@ class CachedStatic(StaticFiles):
 # Serves everything inside uploads/, including uploads/compressed/.
 # Handles Range requests (video seeking, Safari) and fails at startup if
 # the folder is missing, so you'll see it in the Railway deploy logs.
-app.mount("/media", CachedStatic(directory=BASE_DIR / "uploads"), name="media")
+app.mount("/media", CachedStatic(directory=UPLOADS_DIR), name="media")
+
+
+def jpeg_size(path: Path):
+    """Return (width, height) of a JPEG by reading only its header, or None."""
+    try:
+        with open(path, "rb") as f:
+            if f.read(2) != b"\xff\xd8":
+                return None
+            while True:
+                byte = f.read(1)
+                if not byte:
+                    return None
+                if byte != b"\xff":
+                    continue
+                marker = f.read(1)
+                while marker == b"\xff":  # skip fill bytes
+                    marker = f.read(1)
+                if not marker:
+                    return None
+                m = marker[0]
+                if m == 0x00 or m == 0x01 or 0xD0 <= m <= 0xD8:  # no length field
+                    continue
+                if m == 0xD9:  # end of image, no size found
+                    return None
+                length = int.from_bytes(f.read(2), "big")
+                # Start-of-frame markers hold the image dimensions
+                if 0xC0 <= m <= 0xCF and m not in (0xC4, 0xC8, 0xCC):
+                    f.read(1)  # sample precision
+                    height = int.from_bytes(f.read(2), "big")
+                    width = int.from_bytes(f.read(2), "big")
+                    return width, height
+                f.seek(length - 2, 1)
+    except OSError:
+        return None
+
+
+def aspect_of(name: str) -> float:
+    """
+    Aspect ratio (width / height) of a video, read automatically from its
+    poster. The poster is generated from the video by ffmpeg, so it has the
+    same ratio. Falls back to 16:9 if the poster is missing or unreadable.
+    """
+    size = jpeg_size(COMPRESSED_DIR / f"{name}_poster.jpg")
+    if size and size[0] > 0 and size[1] > 0:
+        return round(size[0] / size[1], 4)
+    return round(DEFAULT_ASPECT, 4)
 
 
 def project(id: int, title: str, filename: str, category: str = "Nightlife / Videography"):
@@ -50,6 +100,7 @@ def project(id: int, title: str, filename: str, category: str = "Nightlife / Vid
         "video_url": f"/media/{filename}?v={VERSION}",
         "thumb_url": f"/media/compressed/{name}_thumb.mp4?v={VERSION}",
         "poster_url": f"/media/compressed/{name}_poster.jpg?v={VERSION}",
+        "aspect": aspect_of(name),
     }
 
 
