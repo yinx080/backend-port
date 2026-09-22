@@ -73,9 +73,11 @@ def send_inquiry(inquiry: dict) -> bool:
     Never raises: the caller should not fail a visitor's form submission
     because an email provider had a bad minute.
     """
-    api_key = os.getenv("RESEND_API_KEY")
-    to_address = os.getenv("INQUIRY_TO")
-    from_address = os.getenv("INQUIRY_FROM", DEFAULT_FROM)
+    # "or" rather than a getenv default on purpose: a variable that exists but
+    # is empty (easy to do in a .env or in Railway) must still fall back.
+    api_key = (os.getenv("RESEND_API_KEY") or "").strip()
+    to_address = (os.getenv("INQUIRY_TO") or "").strip()
+    from_address = (os.getenv("INQUIRY_FROM") or "").strip() or DEFAULT_FROM
 
     if not api_key or not to_address:
         log.warning(
