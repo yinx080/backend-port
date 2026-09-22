@@ -30,6 +30,12 @@ RESEND_ENDPOINT = "https://api.resend.com/emails"
 DEFAULT_FROM = "onboarding@resend.dev"
 TIMEOUT_SECONDS = 15
 
+# Resend sits behind Cloudflare, which rejects urllib's default
+# "Python-urllib/3.x" user agent outright - you get a 403 with the body
+# "error code: 1010" and the request never reaches Resend at all.
+# Naming the app instead is enough to get through.
+USER_AGENT = "portfolio-backend/1.0"
+
 
 def _plain_text(inquiry: dict) -> str:
     lines = [
@@ -105,6 +111,8 @@ def send_inquiry(inquiry: dict) -> bool:
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
+            "Accept": "application/json",
+            "User-Agent": USER_AGENT,
         },
         method="POST",
     )
@@ -117,8 +125,19 @@ def send_inquiry(inquiry: dict) -> bool:
             log.error("Resend returned %s", response.status)
             return False
     except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", "replace")[:500]
-        log.error("Resend rejected the email (%s): %s", exc.code, body)
+        body = exc.read().decode("utf-8", "replace")[:800]
+
+        # Tell apart "Cloudflare stopped us at the door" from "Resend read the
+        # request and said no" - they need completely different fixes.
+        if "error code:" in body or "cloudflare" in body.lower():
+            log.error(
+                "Blocked by Cloudflare before reaching Resend (%s): %s. "
+                "This is a client-signature block, not an account problem.",
+                exc.code,
+                body.strip(),
+            )
+        else:
+            log.error("Resend rejected the email (%s): %s", exc.code, body)
         return False
     except Exception as exc:  # network down, DNS, timeout...
         log.error("Could not reach Resend: %s", exc)
