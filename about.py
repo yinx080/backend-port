@@ -24,13 +24,13 @@ the real thing whenever you're ready.
 PORTRAIT = "portrait.jpg"
 
 # Shown to screen readers and if the image ever fails to load.
-PORTRAIT_ALT = "Portrait photo"
+PORTRAIT_ALT = "Holding a Sony Handycam camcorder on a rig with a light"
 
 
 # ---------------------------------------------------------------------------
 # HEADLINE
 # ---------------------------------------------------------------------------
-NAME = "Your Name"
+NAME = "Ignacio Almonte Santos"
 ROLE = "Videographer & Editor"
 LOCATION = "Málaga, Spain"
 
@@ -58,7 +58,7 @@ BIO = [
 # ---------------------------------------------------------------------------
 FACTS = [
     {"label": "Based in", "value": "Málaga, Spain"},
-    {"label": "Shooting since", "value": "20XX"},
+    {"label": "Shooting since", "value": "2026"},
     {"label": "Languages", "value": "Spanish, English"},
     {"label": "Travels for work", "value": "Yes, anywhere"},
     {"label": "Availability", "value": "Booking now"},
@@ -68,48 +68,37 @@ FACTS = [
 # ---------------------------------------------------------------------------
 # WHAT I SHOOT - cards
 # ---------------------------------------------------------------------------
+# "description" is optional: leave it out (or empty) and the card shows just
+# the title. Add a sentence whenever you feel like it.
 SERVICES = [
-    {
-        "title": "Nightlife",
-        "description": "Club nights and events cut to the music. One sentence on "
-                       "what you deliver and how fast.",
-    },
-    {
-        "title": "Automotive",
-        "description": "Rolling shots, static features, car meets. Say what you "
-                       "bring to it.",
-    },
-    {
-        "title": "Music Video",
-        "description": "Concept to final grade. Mention whether you handle the "
-                       "treatment too.",
-    },
-    {
-        "title": "Brand & Social",
-        "description": "Short-form verticals for Instagram and TikTok. Mention "
-                       "turnaround and how many cuts they get.",
-    },
+    {"title": "Nightlife"},
+    {"title": "Automotive"},
+    {"title": "Brand & Social"},
 ]
 
 
 # ---------------------------------------------------------------------------
-# GEAR - grouped lists. Set GEAR = [] to hide the whole section.
+# GEAR - grouped lists.
 # ---------------------------------------------------------------------------
-GEAR = [
-    {"category": "Cameras", "items": ["Body one", "Body two"]},
-    {"category": "Lenses", "items": ["Lens one", "Lens two", "Lens three"]},
-    {"category": "Movement", "items": ["Gimbal", "Drone"]},
-    {"category": "Light & Sound", "items": ["Light one", "Mic one"]},
-    {"category": "Post", "items": ["Editing software", "Grading tool"]},
-]
+# Empty for now, so the "Kit" section doesn't render at all. When you want it
+# back, fill it in using the shape shown underneath:
+#
+#   GEAR = [
+#       {"category": "Cameras", "items": ["Sony Handycam", "..."]},
+#       {"category": "Lenses", "items": ["...", "..."]},
+#       {"category": "Movement", "items": ["Gimbal", "Drone"]},
+#       {"category": "Light & Sound", "items": ["...", "..."]},
+#       {"category": "Post", "items": ["...", "..."]},
+#   ]
+GEAR = []
 
 
 # ---------------------------------------------------------------------------
 # LINKS - shown as a row of buttons
 # ---------------------------------------------------------------------------
 SOCIALS = [
-    {"label": "Instagram", "url": "https://instagram.com/your-handle"},
-    {"label": "YouTube", "url": "https://youtube.com/@your-handle"},
+    {"label": "Instagram", "url": "https://www.instagram.com/cameraboy.vhs/"},
+    {"label": "YouTube", "url": "https://www.youtube.com/@That_Boi_Saint"},
     {"label": "Email", "url": "mailto:you@example.com"},
 ]
 
