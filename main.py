@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+import about  # all the text on the /about page lives in about.py
+
 app = FastAPI()
 
 app.add_middleware(
@@ -20,6 +22,7 @@ app.add_middleware(
 BASE_DIR = Path(__file__).resolve().parent
 UPLOADS_DIR = BASE_DIR / "uploads"
 COMPRESSED_DIR = UPLOADS_DIR / "compressed"
+ABOUT_DIR = UPLOADS_DIR / "about"
 
 # Bump this whenever you replace a video/thumbnail/poster WITHOUT renaming it.
 # It changes every ?v= in the API responses, so browsers fetch the new files
@@ -121,3 +124,35 @@ PROJECTS = [
 @app.get("/api/projects")
 def get_projects():
     return PROJECTS
+
+
+# --- ABOUT PAGE ------------------------------------------------------------
+# The content itself is in about.py. This just wraps it for the frontend and
+# resolves the portrait to a URL (or None, if the file isn't there yet).
+
+
+def portrait_url():
+    """URL for the about-page photo, or None if it hasn't been added yet."""
+    filename = getattr(about, "PORTRAIT", None)
+    if not filename:
+        return None
+    if not (ABOUT_DIR / filename).is_file():
+        return None
+    return f"/media/about/{filename}?v={VERSION}"
+
+
+@app.get("/api/about")
+def get_about():
+    return {
+        "name": about.NAME,
+        "role": about.ROLE,
+        "location": about.LOCATION,
+        "portrait_url": portrait_url(),
+        "portrait_alt": about.PORTRAIT_ALT,
+        "bio": about.BIO,
+        "facts": about.FACTS,
+        "services": about.SERVICES,
+        "gear": about.GEAR,
+        "socials": about.SOCIALS,
+        "cta": about.CTA,
+    }

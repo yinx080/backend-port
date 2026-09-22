@@ -1,0 +1,14 @@
+Drop your about-page photo in this folder.
+
+1. Name it whatever you like, e.g. portrait.jpg
+2. Put that filename in about.py -> PORTRAIT
+3. The page frames it at 4:5, so a portrait-orientation crop works best.
+   Around 1200x1500 px is plenty.
+
+Until the file named in PORTRAIT exists here, the page shows a labelled
+empty frame instead of a broken image.
+
+If you REPLACE the photo later without renaming it, bump VERSION in main.py
+so browsers fetch the new one instead of the cached one.
+
+You can delete this note once your photo is in.
