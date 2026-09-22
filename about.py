@@ -39,17 +39,13 @@ LOCATION = "Málaga, Spain"
 # BIO - one string per paragraph
 # ---------------------------------------------------------------------------
 BIO = [
-    "First paragraph: who you are and what you do. Two or three sentences is "
-    "plenty. Say where you're based, what kind of work you shoot, and how long "
-    "you've been doing it.",
+    "I'm Ignacio Almonte Santos, AKA Camera Boy or Saint, I'm a videographer/editor "
+    "specialized on VHS media.",
 
-    "Second paragraph: how you work. What a shoot with you feels like, what you "
-    "care about in an edit, the kind of look you chase. This is the part people "
-    "actually read before they email you.",
-
-    "Third paragraph (optional - delete this line if you don't want it): "
-    "anything personal that makes you memorable. How you got started, what you "
-    "were doing before, what you shoot for fun.",
+    "Most of my work is based on short format content, but Im not scared of longer"
+    "formats, I always try to catch the vibe of the event happening and portraying it"
+    "at its best. Dynamism, eye grabbing are the words that I would choose to describe"
+    "my work.",
 ]
 
 
