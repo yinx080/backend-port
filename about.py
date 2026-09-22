@@ -71,9 +71,18 @@ FACTS = [
 # "description" is optional: leave it out (or empty) and the card shows just
 # the title. Add a sentence whenever you feel like it.
 SERVICES = [
-    {"title": "Nightlife"},
-    {"title": "Automotive"},
-    {"title": "Brand & Social"},
+    {
+        "title": "Nightlife",
+        "description": "Club nights and events cut to the music.",
+    },
+    {
+        "title": "Automotive",
+        "description": "Rolling shots, static features, car meets.",
+    },
+    {
+        "title": "Brand & Social",
+        "description": "Short-form verticals for Instagram and TikTok.",
+    },
 ]
 
 
