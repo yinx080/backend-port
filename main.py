@@ -185,6 +185,7 @@ def get_rates():
         "heading": rates.HEADING,
         "intro": rates.INTRO,
         "packages": rates.PACKAGES,
+        "price_note": rates.PRICE_NOTE,
         "custom": rates.CUSTOM,
         "budgets": rates.BUDGETS,
         "response_time": rates.RESPONSE_TIME,

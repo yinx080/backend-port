@@ -20,41 +20,36 @@ INTRO = "Packages below. Anything that doesn't fit one, tell me what you have in
 PACKAGES = [
     {
         "name": "Reel",
-        "price": "From €XXX",
+        "price": "From €85",
         "summary": "One short-form vertical edit.",
         "includes": [
-            "Up to X hours shooting",
-            "One edit, up to XX seconds",
-            "X round of changes",
-            "Delivered in X days",
+            "Up to 3 hours shooting",
+            "One edit, up to 40 seconds",
+            "2 round of changes",
+            "Delivered in 3 days",
         ],
         "highlight": False,
     },
     {
         "name": "Event Night",
-        "price": "From €XXX",
+        "price": "From €100",
         "summary": "Full coverage of a night, cut to the music.",
         "includes": [
-            "Up to X hours on site",
-            "One main edit plus X clips for stories",
-            "X rounds of changes",
-            "Delivered in X days",
+            "Up to 3 hours on site",
+            "One main edit plus couple clips for stories",
+            "3 rounds of changes",
+            "Delivered in 4 days",
         ],
         "highlight": True,
     },
-    {
-        "name": "Full Production",
-        "price": "From €XXX",
-        "summary": "Bigger jobs: concept, shoot, grade.",
-        "includes": [
-            "Full day shooting",
-            "Concept and shot planning",
-            "Main edit plus cutdowns",
-            "Colour grade",
-        ],
-        "highlight": False,
-    },
 ]
+
+
+# Small print under the packages. Set PRICE_NOTE = "" to hide the line.
+PRICE_NOTE = (
+    "Prices cover jobs in and around Málaga. Further out, travel is added on "
+    "top — tell me where and I'll put it in the quote."
+)
 
 
 # ---------------------------------------------------------------------------
