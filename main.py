@@ -1,3 +1,5 @@
+import logging
+import re
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -5,6 +7,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 import about  # all the text on the /about page lives in about.py
+import inquiries  # sends the contact form on to your inbox
+import rates  # packages and form options for the /rates page
+from models import InquiryRequest
+
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger("portfolio")
+
+# Load .env when running locally. On Railway the variables are already in the
+# environment, and python-dotenv may not be installed there - either is fine.
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv(Path(__file__).resolve().parent / ".env")
+except ImportError:
+    pass
 
 app = FastAPI()
 
@@ -156,3 +173,46 @@ def get_about():
         "socials": about.SOCIALS,
         "cta": about.CTA,
     }
+
+
+# --- INQUIRIES PAGE --------------------------------------------------------
+# Packages and copy come from rates.py. Submissions go through inquiries.py.
+
+
+@app.get("/api/rates")
+def get_rates():
+    return {
+        "heading": rates.HEADING,
+        "intro": rates.INTRO,
+        "packages": rates.PACKAGES,
+        "custom": rates.CUSTOM,
+        "budgets": rates.BUDGETS,
+        "response_time": rates.RESPONSE_TIME,
+        "fallback_email": rates.FALLBACK_EMAIL,
+    }
+
+
+EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s.]+\.[^@\s]+$")
+
+
+# Deliberately NOT async: inquiries.send_inquiry does a blocking HTTP call, so
+# FastAPI runs this whole function in a worker thread and the rest of the API
+# keeps serving while an email is on its way.
+@app.post("/api/inquiries")
+def create_inquiry(inquiry: InquiryRequest):
+    # Spam trap: bots fill the hidden field, humans never see it. Answer as if
+    # it worked, so the bot has nothing to learn, and drop it.
+    if inquiry.website:
+        log.info("Dropped a honeypot submission")
+        return {"ok": True, "delivered": False}
+
+    if not EMAIL_PATTERN.match(inquiry.email.strip()):
+        return {"ok": False, "error": "That email address doesn't look right."}
+
+    data = inquiry.model_dump(exclude={"website"})
+
+    # Logged before anything else, so an email failure never loses the message.
+    log.info("NEW INQUIRY: %s", data)
+
+    delivered = inquiries.send_inquiry(data)
+    return {"ok": True, "delivered": delivered}

@@ -43,7 +43,7 @@ BIO = [
     "specialized on VHS media.",
 
     "Most of my work is based on short format content, but Im not scared of longer"
-    "formats, I always try to catch the vibe of the event happening and portraying it"
+    " formats, I always try to catch the vibe of the event happening and portraying it"
     "at its best. Dynamism, eye grabbing are the words that I would choose to describe"
     "my work.",
 ]
